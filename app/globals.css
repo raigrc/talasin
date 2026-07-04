@@ -39,6 +39,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Mobile: clear the fixed bottom tab bar (see app/Nav.tsx) so page content
+   and footers never hide behind it. Harmless on pages without the bar. */
+@media (max-width: 639px) {
+  main {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
+}
+
 /* Thin scrollbar. */
 .thin-scroll {
   scrollbar-width: thin;
