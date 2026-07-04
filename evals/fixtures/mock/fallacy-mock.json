@@ -1,0 +1,155 @@
+{
+  "_readme": "Canned data for `npm run eval:fallacy -- --mock`. Two generation batches, their self-critique verdicts, and blind-judge answers. Engineered so we can verify: (1) the lib's structural guardrail drops the bad round in batch 1 (duplicate options), (2) the agreement math computes 8/10 = 80% and the >=90% precision gate correctly FAILS, (3) the needs_review rate computes 1/10 = 10% and the <5% ambiguity gate correctly FAILS. `expected` is what the harness must report for the mock self-test to pass.",
+  "expected": {
+    "survivors_per_batch": [5, 5],
+    "judged": 10,
+    "agreements": 8,
+    "agreement_percent": 80,
+    "needs_review": 1,
+    "needs_review_percent": 10,
+    "structural_violations": 0,
+    "gates": { "precision": "FAIL", "ambiguity": "FAIL", "structural": "PASS" },
+    "disagreement_summaries": [
+      "launch this month or company is finished",
+      "two interns from one university missed deadlines"
+    ]
+  },
+  "generation_batches": [
+    {
+      "rounds": [
+        {
+          "argument": "Everyone in the office has switched to standing desks this quarter, so they must be better for your health. You should switch too before you are the only one still sitting.",
+          "scenario_summary": "office standing desk trend pressure",
+          "options": ["bandwagon", "appeal_to_authority", "hasty_generalization", "appeal_to_emotion"],
+          "correct_fallacy": "bandwagon",
+          "explanation": "This is the bandwagon fallacy: the only reason offered for standing desks being healthier is that everyone at the office adopted them, and popularity is not evidence. Appeal to authority fails because no expert is cited, only coworkers. Hasty generalization fails because no sample is generalized from. Appeal to emotion fails because the push is social conformity, not fear or pity.",
+          "difficulty": "easy"
+        },
+        {
+          "argument": "You cannot trust Marco's budget proposal. The man has been divorced twice, so clearly he cannot manage anything important.",
+          "scenario_summary": "budget proposal dismissed over author divorces",
+          "options": ["ad_hominem", "tu_quoque", "red_herring", "strawman"],
+          "correct_fallacy": "ad_hominem",
+          "explanation": "This is ad hominem: the speaker attacks Marco's personal life instead of engaging with anything in the budget proposal itself. Tu quoque does not apply because nobody accuses Marco of hypocrisy about his own advice. Red herring is close but the attack is aimed at the arguer, which is the more specific diagnosis. Strawman fails because the proposal is never misrepresented, only ignored.",
+          "difficulty": "easy"
+        },
+        {
+          "argument": "If we let employees work from home one day a week, soon nobody will come to the office at all, clients will stop visiting, and the company will fold within a year.",
+          "scenario_summary": "one remote day predicted to collapse company",
+          "options": ["slippery_slope", "false_cause", "false_dilemma", "hasty_generalization"],
+          "correct_fallacy": "slippery_slope",
+          "explanation": "This is a slippery slope: a single modest step, one remote day, is claimed to lead inevitably through escalating stages to company collapse with no evidence for the chain. False cause fails because no past event is being explained. False dilemma fails because no either-or choice is posed. Hasty generalization fails because no small sample is generalized.",
+          "difficulty": "medium"
+        },
+        {
+          "argument": "My opponent says we should fund the arts program, but what she really wants is to defund the police entirely and let crime take over the city.",
+          "scenario_summary": "arts funding twisted into defund police claim",
+          "options": ["strawman", "strawman", "ad_hominem", "red_herring"],
+          "correct_fallacy": "strawman",
+          "explanation": "This round is deliberately malformed for the mock: its options contain a duplicate, so the production guardrail in generateFallacyRounds must drop it before it ever reaches the evaluation set, and the harness should see only five survivors from this batch.",
+          "difficulty": "medium"
+        },
+        {
+          "argument": "I started drinking celery juice on Monday and my headache was gone by Wednesday. That juice is a legitimate cure and people should know about it.",
+          "scenario_summary": "celery juice credited for headache recovery",
+          "options": ["false_cause", "hasty_generalization", "appeal_to_authority", "circular_reasoning"],
+          "correct_fallacy": "false_cause",
+          "explanation": "This is false cause: the headache ending after the juice began is treated as proof the juice ended it, when time alone explains recovery. Hasty generalization is tempting since one case is cited, but the core error is the causal leap, not the sample size. Appeal to authority fails with no expert invoked. Circular reasoning fails because the conclusion is not assumed in the premise.",
+          "difficulty": "medium"
+        },
+        {
+          "argument": "This news site is trustworthy because it only publishes accurate stories, and you can tell the stories are accurate because such a trustworthy site would never publish anything false.",
+          "scenario_summary": "news site vouches for itself in a loop",
+          "options": ["circular_reasoning", "appeal_to_authority", "bandwagon", "red_herring"],
+          "correct_fallacy": "circular_reasoning",
+          "explanation": "This is circular reasoning: the site's trustworthiness is proven by its accuracy, and its accuracy is proven by its trustworthiness, so the conclusion is smuggled into the premise. Appeal to authority is the tempting neighbor, but no outside authority is cited, the claim loops back on itself. Bandwagon fails with no appeal to popularity. Red herring fails because nothing off-topic is introduced.",
+          "difficulty": "hard"
+        }
+      ]
+    },
+    {
+      "rounds": [
+        {
+          "argument": "My coworker suggested we pilot the feature with a small user group first. Apparently she wants us to hide the product from customers forever and never ship anything.",
+          "scenario_summary": "pilot suggestion twisted into never shipping",
+          "options": ["strawman", "slippery_slope", "red_herring", "false_dilemma"],
+          "correct_fallacy": "strawman",
+          "explanation": "This is a strawman: the modest proposal to pilot with a small group is distorted into the extreme position of hiding the product forever, and the distortion is what gets attacked. Slippery slope is the tempting distractor, but no chain of escalating consequences is argued, the position is simply misstated. Red herring fails because the reply stays on topic. False dilemma fails because no two-option choice is offered.",
+          "difficulty": "medium"
+        },
+        {
+          "argument": "How can you vote against the overtime budget? Think about the exhausted parents on this team missing bedtime with their kids while you sit here counting pennies.",
+          "scenario_summary": "overtime budget pushed via exhausted parents image",
+          "options": ["appeal_to_emotion", "appeal_to_authority", "ad_hominem", "bandwagon"],
+          "correct_fallacy": "appeal_to_emotion",
+          "explanation": "This is appeal to emotion: the vivid image of exhausted parents missing bedtime substitutes for any argument about whether the overtime budget is justified. Ad hominem is the tempting distractor because of the counting-pennies jab, but the persuasive engine is pity, not an attack on the voter's character. Appeal to authority fails with no expert cited, and bandwagon fails with no appeal to popularity.",
+          "difficulty": "easy"
+        },
+        {
+          "argument": "Either we launch this month, or the company is finished. There is no middle ground here, so everyone needs to stop asking for more testing time.",
+          "scenario_summary": "launch this month or company is finished",
+          "options": ["false_dilemma", "slippery_slope", "appeal_to_emotion", "hasty_generalization"],
+          "correct_fallacy": "false_dilemma",
+          "explanation": "This is a false dilemma: launching this month and total company failure are presented as the only two possibilities when options like a partial launch or a short delay plainly exist. Slippery slope is the tempting distractor, but no chain of escalating steps is described, just a forced either-or. Appeal to emotion fails because fear is asserted, not used in place of the argument's structure. Hasty generalization fails because nothing is generalized from a sample.",
+          "difficulty": "medium"
+        },
+        {
+          "argument": "Both interns we hired from that university missed their deadlines this summer. That school clearly produces unreliable graduates, and we should stop recruiting there.",
+          "scenario_summary": "two interns from one university missed deadlines",
+          "options": ["hasty_generalization", "false_cause", "ad_hominem", "strawman"],
+          "correct_fallacy": "hasty_generalization",
+          "explanation": "This is a hasty generalization: a conclusion about every graduate of a university is drawn from a sample of exactly two interns in one summer. False cause is the tempting distractor because the school is blamed for the behavior, but the core error is the tiny unrepresentative sample, not a causal mechanism. Ad hominem fails because no arguer is being attacked to dodge an argument. Strawman fails because nobody's position is misrepresented.",
+          "difficulty": "hard"
+        },
+        {
+          "argument": "My doctor told me I need to lose weight for my blood pressure, but why should I listen to a word of it? The man is overweight himself.",
+          "scenario_summary": "doctor weight advice dismissed for own weight",
+          "options": ["tu_quoque", "ad_hominem", "appeal_to_authority", "red_herring"],
+          "correct_fallacy": "tu_quoque",
+          "explanation": "This is tu quoque: the medical advice is dismissed because the advisor does not follow it himself, and hypocrisy in the messenger does not make the advice wrong. Ad hominem is the tempting neighbor, but the specific move is the you-too charge of not practicing what he preaches, which is the more precise label. Appeal to authority fails because rejecting an expert is not that fallacy. Red herring fails because the reply stays on the topic of the advice.",
+          "difficulty": "medium"
+        }
+      ]
+    }
+  ],
+  "critique_responses": [
+    {
+      "verdicts": [
+        { "index": 0, "single_fallacy": true, "why": "Popularity is the only support offered; bandwagon is the sole defensible label." },
+        { "index": 1, "single_fallacy": true, "why": "Pure personal attack in place of engaging the proposal." },
+        { "index": 2, "single_fallacy": true, "why": "An escalating chain without evidence; classic slippery slope." },
+        { "index": 3, "single_fallacy": true, "why": "The juice-cured-it leap is a clean post hoc causal error." },
+        { "index": 4, "single_fallacy": true, "why": "The premise and conclusion vouch for each other; unambiguous circle." }
+      ]
+    },
+    {
+      "verdicts": [
+        { "index": 0, "single_fallacy": true, "why": "The pilot suggestion is clearly misrepresented before being attacked." },
+        { "index": 1, "single_fallacy": true, "why": "Pity imagery replaces any budget argument; single clear fallacy." },
+        { "index": 2, "single_fallacy": true, "why": "Two options are forced where more exist; clean false dilemma." },
+        { "index": 3, "single_fallacy": false, "why": "Arguably also false cause, blaming the school as the causal agent for the interns' behavior; two labels are defensible." },
+        { "index": 4, "single_fallacy": true, "why": "The you-too dismissal of advice is precisely tu quoque." }
+      ]
+    }
+  ],
+  "judge_responses": [
+    {
+      "answers": [
+        { "index": 0, "fallacy": "bandwagon" },
+        { "index": 1, "fallacy": "ad_hominem" },
+        { "index": 2, "fallacy": "slippery_slope" },
+        { "index": 3, "fallacy": "false_cause" },
+        { "index": 4, "fallacy": "circular_reasoning" }
+      ]
+    },
+    {
+      "answers": [
+        { "index": 0, "fallacy": "strawman" },
+        { "index": 1, "fallacy": "appeal_to_emotion" },
+        { "index": 2, "fallacy": "slippery_slope" },
+        { "index": 3, "fallacy": "ad_hominem" },
+        { "index": 4, "fallacy": "tu_quoque" }
+      ]
+    }
+  ]
+}

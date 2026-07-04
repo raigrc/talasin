@@ -1,0 +1,96 @@
+{
+  "_readme": "Synthetic fixtures for `npm run eval:voice -- --mock`. Ground truths reuse the s1/s5 script texts so the mock exercises the same math as a real run. No audio files needed — mock mode feeds a generated silent WAV through the real analyzeInterviewAudio path and intercepts the HTTP layer. Canned model outputs + expected per-gate verdicts live in voice-responses.json.",
+  "fixtures": [
+    {
+      "id": "mock-clean-pass",
+      "audio": null,
+      "interview_prompt": "Tell me about a project you are proud of.",
+      "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
+      "word_count": 132,
+      "duration_seconds": 60,
+      "filler_count": 0,
+      "filler_words": [],
+      "target_wpm": null,
+      "expected_structure": { "has_beginning": true, "has_middle": true, "has_end": true },
+      "notes": "All gates should PASS: exact transcript, exact filler count, stable scores."
+    },
+    {
+      "id": "mock-tolerance-pass",
+      "audio": null,
+      "interview_prompt": "Walk me through a project you would highlight.",
+      "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt last spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were painful to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+      "word_count": 142,
+      "duration_seconds": 60,
+      "filler_count": 16,
+      "filler_words": [
+        { "word": "um", "occurrences": 6 },
+        { "word": "uh", "occurrences": 4 },
+        { "word": "like", "occurrences": 3 },
+        { "word": "you know", "occurrences": 2 },
+        { "word": "basically", "occurrences": 1 }
+      ],
+      "target_wpm": null,
+      "notes": "All gates should PASS at the tolerance edges: WER ~1.4%, filler off by exactly 1 (17 then 15 vs true 16), score delta 4."
+    },
+    {
+      "id": "mock-fail-filler",
+      "audio": null,
+      "interview_prompt": "Walk me through a project you would highlight.",
+      "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt last spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were painful to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+      "word_count": 142,
+      "duration_seconds": 60,
+      "filler_count": 16,
+      "filler_words": [
+        { "word": "um", "occurrences": 6 },
+        { "word": "uh", "occurrences": 4 },
+        { "word": "like", "occurrences": 3 },
+        { "word": "you know", "occurrences": 2 },
+        { "word": "basically", "occurrences": 1 }
+      ],
+      "target_wpm": null,
+      "notes": "ENGINEERED FAILURE: model undercounts fillers (12 vs true 16, error 4 > tolerance 1). Filler gate must FAIL."
+    },
+    {
+      "id": "mock-fail-wpm",
+      "audio": null,
+      "interview_prompt": "Walk me through a project you would highlight.",
+      "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt last spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were painful to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+      "word_count": 142,
+      "duration_seconds": 60,
+      "filler_count": 16,
+      "filler_words": [
+        { "word": "um", "occurrences": 6 },
+        { "word": "uh", "occurrences": 4 },
+        { "word": "like", "occurrences": 3 },
+        { "word": "you know", "occurrences": 2 },
+        { "word": "basically", "occurrences": 1 }
+      ],
+      "target_wpm": null,
+      "notes": "ENGINEERED FAILURE: transcript drops 12 words (142 -> 130) so app-computed WPM drifts 8.5% (> 5%) while WER stays 8.5% (< 10%). WPM gate must FAIL, WER gate must PASS — proves the two gates are independent."
+    },
+    {
+      "id": "mock-fail-wer",
+      "audio": null,
+      "interview_prompt": "Tell me about a project you are proud of.",
+      "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
+      "word_count": 132,
+      "duration_seconds": 60,
+      "filler_count": 0,
+      "filler_words": [],
+      "target_wpm": null,
+      "notes": "ENGINEERED FAILURE: 18 words substituted (same word count) -> WER 13.6% (> 10%) while WPM error is 0%. WER gate must FAIL, WPM gate must PASS."
+    },
+    {
+      "id": "mock-fail-stability",
+      "audio": null,
+      "interview_prompt": "Tell me about a project you are proud of.",
+      "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
+      "word_count": 132,
+      "duration_seconds": 60,
+      "filler_count": 0,
+      "filler_words": [],
+      "target_wpm": null,
+      "notes": "ENGINEERED FAILURE: identical transcript both runs but overall_delivery_score swings 80 -> 68 (delta 12 > 5). Stability gate must FAIL — this is the exact noise mode that would poison the trend charts."
+    }
+  ]
+}

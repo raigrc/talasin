@@ -1,0 +1,143 @@
+{
+  "_readme": "Canned Gemini voice responses for --mock, keyed by fixture id. Each case lists the raw model JSON returned per run (the mock plays these through the REAL analyzeInterviewAudio path) and the per-gate verdicts the harness is EXPECTED to produce. The mock run passes iff actual verdicts match `expected` for every case — that is how we know the gates actually trip.",
+  "cases": {
+    "mock-clean-pass": {
+      "expected": { "filler": "PASS", "wpm": "PASS", "wer": "PASS", "stability": "PASS" },
+      "runs": [
+        {
+          "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
+          "word_count": 132,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 84,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Clear setup, concrete middle, closes on results." },
+          "coaching": ["Quantify the parallel-run effort so the six weeks feels earned.", "Slow slightly on the final result so it lands."],
+          "overall_delivery_score": 82
+        },
+        {
+          "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
+          "word_count": 132,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 86,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Well-structured answer with a concrete close." },
+          "coaching": ["Name the two teams that copied the playbook for extra credibility.", "Open with the refresh-time win instead of burying it."],
+          "overall_delivery_score": 80
+        }
+      ]
+    },
+    "mock-tolerance-pass": {
+      "expected": { "filler": "PASS", "wpm": "PASS", "wer": "PASS", "stability": "PASS" },
+      "runs": [
+        {
+          "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt this spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were brutal to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+          "word_count": 142,
+          "filler_words": { "count": 17, "items": [{ "word": "um", "occurrences": 6 }, { "word": "uh", "occurrences": 4 }, { "word": "like", "occurrences": 4 }, { "word": "you know", "occurrences": 2 }, { "word": "basically", "occurrences": 1 }] },
+          "clarity_score": 62,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Followable but heavily interrupted by fillers." },
+          "coaching": ["Cut the um/uh before every number — pause silently instead.", "The forty-to-seventy-eight stat is strong; deliver it clean."],
+          "overall_delivery_score": 60
+        },
+        {
+          "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt this spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were brutal to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+          "word_count": 142,
+          "filler_words": { "count": 15, "items": [{ "word": "um", "occurrences": 6 }, { "word": "uh", "occurrences": 4 }, { "word": "like", "occurrences": 2 }, { "word": "you know", "occurrences": 2 }, { "word": "basically", "occurrences": 1 }] },
+          "clarity_score": 58,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Cluttered delivery but the story arc is complete." },
+          "coaching": ["Practice the opening sentence until it comes out filler-free.", "Group the metrics into one clean sentence at the end."],
+          "overall_delivery_score": 64
+        }
+      ]
+    },
+    "mock-fail-filler": {
+      "expected": { "filler": "FAIL", "wpm": "PASS", "wer": "PASS", "stability": "PASS" },
+      "runs": [
+        {
+          "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt last spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were painful to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+          "word_count": 142,
+          "filler_words": { "count": 12, "items": [{ "word": "um", "occurrences": 5 }, { "word": "uh", "occurrences": 3 }, { "word": "like", "occurrences": 2 }, { "word": "you know", "occurrences": 2 }] },
+          "clarity_score": 70,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete arc despite filler noise." },
+          "coaching": ["Replace the um before each metric with a breath.", "Tighten the tax-details tangent to one clause."],
+          "overall_delivery_score": 70
+        },
+        {
+          "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt last spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were painful to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+          "word_count": 142,
+          "filler_words": { "count": 12, "items": [{ "word": "um", "occurrences": 5 }, { "word": "uh", "occurrences": 3 }, { "word": "like", "occurrences": 2 }, { "word": "you know", "occurrences": 2 }] },
+          "clarity_score": 71,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete arc despite filler noise." },
+          "coaching": ["Replace the um before each metric with a breath.", "Tighten the tax-details tangent to one clause."],
+          "overall_delivery_score": 70
+        }
+      ]
+    },
+    "mock-fail-wpm": {
+      "expected": { "filler": "PASS", "wpm": "FAIL", "wer": "PASS", "stability": "PASS" },
+      "runs": [
+        {
+          "transcript": "the project I would highlight is, the customer onboarding flow we rebuilt last spring. The old flow had, eleven steps and, most people quit before finishing. Basically, we started by watching, ten real users try to sign up, and, the recordings were painful to sit through. People got stuck on, the second screen, the one asking for tax details nobody keeps handy. we cut the form to four steps and moved the, tax part to after the first login. Completion went from, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+          "word_count": 130,
+          "filler_words": { "count": 16, "items": [{ "word": "um", "occurrences": 6 }, { "word": "uh", "occurrences": 4 }, { "word": "like", "occurrences": 3 }, { "word": "you know", "occurrences": 2 }, { "word": "basically", "occurrences": 1 }] },
+          "clarity_score": 64,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Story is complete but delivery is cluttered." },
+          "coaching": ["Lead with the completion-rate win.", "Cut the hedging before every number."],
+          "overall_delivery_score": 66
+        },
+        {
+          "transcript": "the project I would highlight is, the customer onboarding flow we rebuilt last spring. The old flow had, eleven steps and, most people quit before finishing. Basically, we started by watching, ten real users try to sign up, and, the recordings were painful to sit through. People got stuck on, the second screen, the one asking for tax details nobody keeps handy. we cut the form to four steps and moved the, tax part to after the first login. Completion went from, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
+          "word_count": 130,
+          "filler_words": { "count": 16, "items": [{ "word": "um", "occurrences": 6 }, { "word": "uh", "occurrences": 4 }, { "word": "like", "occurrences": 3 }, { "word": "you know", "occurrences": 2 }, { "word": "basically", "occurrences": 1 }] },
+          "clarity_score": 65,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Story is complete but delivery is cluttered." },
+          "coaching": ["Lead with the completion-rate win.", "Cut the hedging before every number."],
+          "overall_delivery_score": 67
+        }
+      ]
+    },
+    "mock-fail-wer": {
+      "expected": { "filler": "PASS", "wpm": "PASS", "wer": "FAIL", "stability": "PASS" },
+      "runs": [
+        {
+          "transcript": "This year I ran the transition of our reporting pipeline from daily batch tasks to a streaming setup. The old system took ten hours to refresh, and the sales team kept taking decisions on old figures. I proposed the change, charted every upstream dependency, and wrote the plan the team executed over six weeks. My core contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, something broke, and refresh time went from nine hours to under ten seconds. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams adopted our staged cutover manual for their own migrations.",
+          "word_count": 132,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 82,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Clear narrative with a strong close." },
+          "coaching": ["Anchor the timeline earlier in the answer.", "Give one sentence on what could have gone wrong."],
+          "overall_delivery_score": 81
+        },
+        {
+          "transcript": "This year I ran the transition of our reporting pipeline from daily batch tasks to a streaming setup. The old system took ten hours to refresh, and the sales team kept taking decisions on old figures. I proposed the change, charted every upstream dependency, and wrote the plan the team executed over six weeks. My core contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, something broke, and refresh time went from nine hours to under ten seconds. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams adopted our staged cutover manual for their own migrations.",
+          "word_count": 132,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 83,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Clear narrative with a strong close." },
+          "coaching": ["Anchor the timeline earlier in the answer.", "Give one sentence on what could have gone wrong."],
+          "overall_delivery_score": 82
+        }
+      ]
+    },
+    "mock-fail-stability": {
+      "expected": { "filler": "PASS", "wpm": "PASS", "wer": "PASS", "stability": "FAIL" },
+      "runs": [
+        {
+          "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
+          "word_count": 132,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 75,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Solid structure throughout." },
+          "coaching": ["Land the closing metric with a pause.", "Trim the dependency-mapping detail."],
+          "overall_delivery_score": 80
+        },
+        {
+          "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
+          "word_count": 132,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 74,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Solid structure throughout." },
+          "coaching": ["Land the closing metric with a pause.", "Trim the dependency-mapping detail."],
+          "overall_delivery_score": 68
+        }
+      ]
+    }
+  }
+}
