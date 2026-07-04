@@ -46,3 +46,5 @@ next-env.d.ts
 /evals/fixtures/audio/*
 !/evals/fixtures/audio/.gitkeep
 /evals/output/
+
+.vercel
