@@ -81,7 +81,7 @@ function validFeedback(overrides: Record<string, unknown> = {}) {
     coaching: ["a", "b"],
     overall_delivery_score: 70,
     confidence: "high",
-    model: "gemini-3.5-flash",
+    model: "gemini-2.5-flash",
     ...overrides,
   };
 }

@@ -7,8 +7,16 @@ import "server-only";
  * touches a single file. Both features use the same Flash model per AI_DESIGN.
  */
 
-/** Model used for both voice feedback and fallacy batch generation. */
-export const GEMINI_MODEL = "gemini-3.5-flash";
+/**
+ * Model used for both voice feedback and fallacy batch generation.
+ * gemini-2.5-flash, NOT gemini-3.5-flash: 3.5-flash is a heavy reasoning model
+ * whose thinking+generation ran ~80s on a real interview clip + this structured
+ * schema — even with thinkingBudget:0 — blowing VOICE_TIMEOUT_MS. The abort was
+ * classed "failed" and surfaced to the user as a 502 "the analyzer had a problem"
+ * (root-caused live 2026-07-07). 2.5-flash returns the same conforming JSON in
+ * ~15s (audio) / ~1.4s (text). Re-verify audio latency here before bumping this.
+ */
+export const GEMINI_MODEL = "gemini-2.5-flash";
 
 /** Server-side ceiling on a Gemini call. Audio → 60s (AI_DESIGN §1.8). */
 export const VOICE_TIMEOUT_MS = 60_000;
