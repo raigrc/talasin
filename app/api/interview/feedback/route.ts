@@ -211,6 +211,8 @@ export async function POST(request: Request) {
       xp_total: activity.xpTotal,
       level: activity.level,
       new_achievements: activity.newAchievements,
+      // pronunciation analysis (additive)
+      pronunciation: feedback.pronunciation,
     });
   } catch (err) {
     if (err instanceof GeminiError) {

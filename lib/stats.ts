@@ -41,6 +41,12 @@ export interface InterviewTrendPoint {
   count: number;
 }
 
+export interface PronunciationTrendPoint {
+  local_day: string;
+  avg_pronunciation: number; // 0..100
+  count: number;
+}
+
 export interface NbackTrendPoint {
   local_day: string;
   avg_score: number; // 0..100
@@ -88,6 +94,11 @@ export interface Stats {
     total: number;
     trend: InterviewTrendPoint[];
   };
+  pronunciation: {
+    trend: PronunciationTrendPoint[];
+    top_accent: string | null;
+    top_problem_sounds: string[];
+  } | null; // null when no attempts have a pronunciation_score
   // --- v1 additive fields (DESIGN_V1.md §4.8) ---
   games: {
     nback: { total: number; current_n: number; trend: NbackTrendPoint[] };
@@ -171,7 +182,7 @@ export async function getStats(): Promise<Stats> {
   const { data: ivRows, error: ivErr } = await supabase
     .from("interview_attempts")
     .select(
-      "filler_count, words_per_minute, clarity_score, overall_delivery_score, duration_sec, local_day, created_at",
+      "filler_count, words_per_minute, clarity_score, overall_delivery_score, duration_sec, local_day, created_at, pronunciation_score, accent_label, problem_sound_categories",
     )
     .order("created_at", { ascending: false })
     .limit(TREND_ATTEMPTS);
@@ -186,6 +197,9 @@ export async function getStats(): Promise<Stats> {
     | "duration_sec"
     | "local_day"
     | "created_at"
+    | "pronunciation_score"
+    | "accent_label"
+    | "problem_sound_categories"
   >[];
 
   // Total interview count (all-time) is a separate cheap head-count query.
@@ -204,9 +218,16 @@ export async function getStats(): Promise<Stats> {
     wpmN: number;
     deliverySum: number;
     deliveryN: number;
+    pronunciationSum: number;
+    pronunciationN: number;
     count: number;
   }
   const ivByDay = new Map<string, DayAcc>();
+  // Accent / problem-sound tallies across the window (overall stats).
+  const accentCounts = new Map<string, number>();
+  const problemSoundCounts = new Map<string, number>();
+  let hasAnyPronunciation = false;
+
   for (const r of iv) {
     const cur =
       ivByDay.get(r.local_day) ??
@@ -219,6 +240,8 @@ export async function getStats(): Promise<Stats> {
         wpmN: 0,
         deliverySum: 0,
         deliveryN: 0,
+        pronunciationSum: 0,
+        pronunciationN: 0,
         count: 0,
       } satisfies DayAcc);
     cur.count += 1;
@@ -241,6 +264,19 @@ export async function getStats(): Promise<Stats> {
       cur.deliverySum += r.overall_delivery_score;
       cur.deliveryN += 1;
     }
+    if (r.pronunciation_score != null) {
+      cur.pronunciationSum += r.pronunciation_score;
+      cur.pronunciationN += 1;
+      hasAnyPronunciation = true;
+    }
+    if (r.accent_label != null) {
+      accentCounts.set(r.accent_label, (accentCounts.get(r.accent_label) ?? 0) + 1);
+    }
+    if (r.problem_sound_categories != null) {
+      for (const cat of r.problem_sound_categories) {
+        problemSoundCounts.set(cat, (problemSoundCounts.get(cat) ?? 0) + 1);
+      }
+    }
     ivByDay.set(r.local_day, cur);
   }
   const ivTrend: InterviewTrendPoint[] = [...ivByDay.entries()]
@@ -253,6 +289,32 @@ export async function getStats(): Promise<Stats> {
       count: v.count,
     }))
     .sort((a, b) => a.local_day.localeCompare(b.local_day));
+
+  // Pronunciation trend: average score per day (only days with non-null scores).
+  const pronunciationTrend: PronunciationTrendPoint[] = [...ivByDay.entries()]
+    .filter(([, v]) => v.pronunciationN > 0)
+    .map(([local_day, v]) => ({
+      local_day,
+      avg_pronunciation: Math.round(v.pronunciationSum / v.pronunciationN),
+      count: v.pronunciationN,
+    }))
+    .sort((a, b) => a.local_day.localeCompare(b.local_day));
+
+  // Top accent label (most frequent across the window).
+  let topAccent: string | null = null;
+  if (accentCounts.size > 0) {
+    topAccent = [...accentCounts.entries()].sort((a, b) => b[1] - a[1])[0][0];
+  }
+
+  // Top 3 problem sound categories (most frequent across the window).
+  const topProblemSounds = [...problemSoundCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([cat]) => cat);
+
+  const pronunciation = hasAnyPronunciation
+    ? { trend: pronunciationTrend, top_accent: topAccent, top_problem_sounds: topProblemSounds }
+    : null;
 
   // --- v1: per-game trends (n-back / syllogism), DESIGN_V1.md §4.8 ----------
   const { data: nbRows, error: nbErr, count: nbCount } = await supabase
@@ -425,6 +487,7 @@ export async function getStats(): Promise<Stats> {
       total: ivTotal ?? 0,
       trend: ivTrend,
     },
+    pronunciation,
     games: {
       nback: { total: nbCount ?? nb.length, current_n: currentN, trend: nbackTrend },
       syllogism: { total: sylCount ?? syl.length, trend: syllogismTrend },

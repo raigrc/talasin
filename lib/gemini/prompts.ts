@@ -35,7 +35,53 @@ Rules:
   concrete in THIS answer (quote or reference it). No generic advice, no praise padding.
 - overall_delivery_score (0-100): your single-number verdict on delivery quality for
   trend tracking. Weigh clarity, filler density, and structure. Be consistent run to run.
-- Output ONLY valid JSON matching the provided schema. No prose outside the JSON.`;
+- Output ONLY valid JSON matching the provided schema. No prose outside the JSON.
+
+Pronunciation Analysis:
+- You are listening to the speaker's PRONUNCIATION, not just their words. Analyze their
+  accent and pronunciation patterns against standard intelligible English.
+- accent_label: detect the DOMINANT accent pattern. This is a classification, not a
+  quality judgment. Use exactly one of: "filipino", "indian", "chinese", "japanese",
+  "korean", "southeast_asian_other", "neutral", "unclear". Choose "neutral" for
+  speakers whose accent is indistinguishable from a generic global English accent. Choose
+  "unclear" if the clip is too short or too muffled to tell.
+- accent_notes: 1–2 sentences describing the key accent features you heard — what patterns
+  identify this accent. Be specific ("the speaker's /r/ is tapped rather than approximant")
+  not vague ("strong accent").
+- pronunciation_score (0–100): how clearly and intelligibly the speaker is pronouncing
+  English, penalizing deviations that affect comprehension. 90–100 = native-like clarity;
+  70–89 = very clear with minor accent markers; 50–69 = intelligible but some sounds may
+  confuse a listener; below 50 = frequent intelligibility barriers.
+- problem_sounds: identify up to 5 specific pronunciation issues you HEARD in this clip.
+  Each must use a category from this CLOSED list (pick the closest match):
+    "th_stop"            — dental fricatives /θ/ /ð/ become stops /t/ /d/ ("think" → "tink")
+    "vowel_merger"       — short and long vowels not distinguished ("ship"/"sheep" sound alike)
+    "r_color"            — /r/ is rolled, trilled, tapped, or dropped
+    "l_r_confusion"      — /l/ and /r/ are swapped or indistinguishable
+    "consonant_cluster"  — final consonant clusters simplified ("test" → "tes", "hand" → "han")
+    "stress_timing"      — wrong syllable stress or syllable-timed rhythm from L1 transfer
+    "v_w_merge"          — /v/ produced as /w/ ("very" → "wery")
+    "final_consonant"    — word-final consonant deleted ("good" → "goo", "and" → "an")
+    "vowel_insertion"    — extra schwa or vowel inserted between consonants
+    "other"              — use ONLY if a real issue exists but doesn't fit any above category
+  For each problem sound:
+    - category: use the exact string from the list above
+    - description: plain-English explanation of what the speaker is doing ("The speaker
+      replaces the 'th' sound with a 't', making 'think' sound like 'tink'")
+    - examples: 1–3 specific words from the transcript where this occurred (use the exact
+      transcript words, not idealized forms)
+    - severity: "high" if it significantly affects intelligibility; "medium" if noticeable
+      but rarely causes confusion; "low" if it's a minor accent marker
+    - tip: one blunt, actionable coaching sentence ("Replace /t/ with a dental fricative:
+      place your tongue between your teeth, not behind them")
+- pronunciation_coaching: 2–3 high-level pronunciation tips distinct from the per-sound
+  tips. These should address rhythm, stress patterns, or vowel quality — things that
+  affect overall intelligibility beyond individual sounds. Same blunt, actionable style
+  as the other coaching tips.
+- Only report problem_sounds you actually heard evidence for in this clip. Do NOT
+  hallucinate issues based on the detected accent label. If the speaker's pronunciation
+  is clear for all sounds you can evaluate, return an empty problem_sounds array and
+  a high pronunciation_score.`;
 
 /**
  * STAR rubric appended for BEHAVIORAL prompts only (DESIGN_V1.md §4.4). It

@@ -91,6 +91,40 @@
       "filler_words": [],
       "target_wpm": null,
       "notes": "ENGINEERED FAILURE: identical transcript both runs but overall_delivery_score swings 80 -> 68 (delta 12 > 5). Stability gate must FAIL — this is the exact noise mode that would poison the trend charts."
+    },
+    {
+      "id": "mock-pron-pass",
+      "audio": null,
+      "interview_prompt": "Tell me about a project you are proud of.",
+      "transcript": "I think the three main things that made this project work were clear communication, consistent testing, and the ability to adapt when things changed.",
+      "word_count": 24,
+      "duration_seconds": 30,
+      "filler_count": 0,
+      "filler_words": [],
+      "target_wpm": null,
+      "pronunciation_fixture": true,
+      "expected_pronunciation_categories": ["th_stop"],
+      "expected_accent_label": "filipino",
+      "expected_problem_count_min": 1,
+      "expected_score_max": 75,
+      "notes": "Pronunciation PASS: Filipino accent detected consistently, th_stop category matched, pronunciation score ~61 (below 75 threshold), 1 problem sound detected."
+    },
+    {
+      "id": "mock-pron-fail-accent",
+      "audio": null,
+      "interview_prompt": "Tell me about a project you are proud of.",
+      "transcript": "I think the three main things that made this project work were clear communication, consistent testing, and the ability to adapt when things changed.",
+      "word_count": 24,
+      "duration_seconds": 30,
+      "filler_count": 0,
+      "filler_words": [],
+      "target_wpm": null,
+      "pronunciation_fixture": true,
+      "expected_pronunciation_categories": ["th_stop"],
+      "expected_accent_label": "filipino",
+      "expected_problem_count_min": 1,
+      "expected_score_max": 75,
+      "notes": "ENGINEERED FAILURE: accent_label flips between 'filipino' and 'southeast_asian_other' across runs. Accent stability gate must FAIL. Other pronunciation gates pass."
     }
   ]
 }

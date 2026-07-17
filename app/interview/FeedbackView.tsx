@@ -43,6 +43,19 @@ export interface Feedback {
   xp_total?: number;
   level?: number;
   new_achievements?: { key: string; name: string }[];
+  pronunciation?: {
+    score: number;
+    accent_label: string;
+    accent_notes: string;
+    problem_sounds: {
+      category: string;
+      description: string;
+      examples: string[];
+      severity: string;
+      tip: string;
+    }[];
+    coaching: string[];
+  };
 }
 
 /** Map a 0-100 score to a CSS var color band. */
@@ -51,6 +64,32 @@ function scoreColor(score: number): string {
   if (score >= 60) return "var(--accent)";
   if (score >= 40) return "#fbbf24"; // amber
   return "var(--danger)";
+}
+
+/** Format a snake_case category key into a human-readable label. */
+function formatCategory(cat: string): string {
+  const map: Record<string, string> = {
+    th_stop: "TH Sounds",
+    vowel_merger: "Vowel Merger",
+    r_l_confusion: "R/L Confusion",
+    short_long_vowel: "Short vs Long Vowels",
+    consonant_cluster: "Consonant Clusters",
+    final_consonant: "Final Consonants",
+    stress_timing: "Stress & Timing",
+    intonation: "Intonation",
+  };
+  if (map[cat]) return map[cat];
+  // Fallback: replace underscores with spaces and title-case.
+  return cat
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Map a problem-sound severity level to a color. */
+function severityColor(sev: string): string {
+  if (sev === "high") return "var(--danger)";
+  if (sev === "medium") return "#fbbf24";
+  return "var(--muted)";
 }
 
 /** Qualitative pace label from WPM (conversational sweet spot ~130-160). */
@@ -130,6 +169,7 @@ export function FeedbackView({ feedback }: { feedback: Feedback }) {
     star,
     structure_score,
     previous,
+    pronunciation,
   } = feedback;
 
   return (
@@ -266,6 +306,98 @@ export function FeedbackView({ feedback }: { feedback: Feedback }) {
           <p className="text-sm text-[var(--muted)]">{structure.note}</p>
         )}
       </div>
+
+      {/* Pronunciation analysis. */}
+      {pronunciation && (() => {
+        const pr = pronunciation;
+        return (
+          <>
+            {/* Score card */}
+            <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5">
+              <div className="mb-3 flex items-baseline justify-between">
+                <h3 className="text-sm font-medium">Pronunciation</h3>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="inline-flex items-center rounded-full bg-[var(--surface-2)] px-2.5 py-0.5 text-xs font-medium capitalize"
+                  >
+                    {pr.accent_label}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-end gap-3">
+                <span
+                  className="text-4xl font-semibold tabular-nums"
+                  style={{ color: scoreColor(pr.score) }}
+                >
+                  {pr.score}
+                </span>
+                <span className="pb-1 text-sm text-[var(--muted)]">/ 100</span>
+              </div>
+              <p className="mt-2 text-sm text-[var(--muted)]">{pr.accent_notes}</p>
+            </div>
+
+            {/* Problem sounds */}
+            {pr.problem_sounds.length > 0 && (
+              <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5">
+                <h3 className="mb-3 text-sm font-medium">Problem Sounds</h3>
+                <div className="flex flex-col gap-3">
+                  {pr.problem_sounds.slice(0, 5).map((ps, i) => (
+                    <div
+                      key={i}
+                      className="flex flex-col gap-2 rounded-md bg-[var(--surface-2)] p-4"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          aria-hidden
+                          className="inline-flex h-2.5 w-2.5 flex-none rounded-full"
+                          style={{ backgroundColor: severityColor(ps.severity) }}
+                        />
+                        <span className="text-sm font-medium">
+                          {formatCategory(ps.category)}
+                        </span>
+                        <span className="text-xs capitalize text-[var(--muted)]">
+                          {ps.severity}
+                        </span>
+                      </div>
+                      <p className="text-sm text-[var(--foreground)]/90">
+                        {ps.description}
+                      </p>
+                      {ps.examples.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {ps.examples.map((w) => (
+                            <span
+                              key={w}
+                              className="rounded bg-[var(--border)]/40 px-2 py-0.5 text-xs text-[var(--foreground)]/75"
+                            >
+                              &ldquo;{w}&rdquo;
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-xs text-[var(--muted)]">💡 {ps.tip}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Pronunciation coaching */}
+            {pr.coaching.length > 0 && (
+              <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5">
+                <h3 className="mb-3 text-sm font-medium">Pronunciation Coaching</h3>
+                <ul className="flex flex-col gap-2">
+                  {pr.coaching.map((tip, i) => (
+                    <li key={i} className="flex gap-2 text-sm">
+                      <span className="text-[var(--accent)]">→</span>
+                      <span className="text-[var(--foreground)]/90">{tip}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        );
+      })()}
 
       {/* Blunt coaching tips. */}
       <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5">

@@ -10,8 +10,8 @@ import {
   GeminiError,
 } from "./config";
 import {
-  voiceModelSchema,
-  voiceStarModelSchema,
+  voiceModelSchemaWithPronunciation,
+  voiceStarModelSchemaWithPronunciation,
   fallacyBatchSchema,
   selfCritiqueSchema,
   VOICE_RESPONSE_SCHEMA,
@@ -236,7 +236,7 @@ export async function analyzeInterviewAudio(
       label: "voice",
     });
     // Parse with the exact variant we requested — never union-guess (§4.3).
-    const parsed = (useStar ? voiceStarModelSchema : voiceModelSchema).safeParse(
+    const parsed = (useStar ? voiceStarModelSchemaWithPronunciation : voiceModelSchemaWithPronunciation).safeParse(
       parseJson(text, "voice"),
     );
     if (!parsed.success) {
@@ -295,6 +295,13 @@ export async function analyzeInterviewAudio(
       overall_delivery_score: model.overall_delivery_score,
       confidence,
       model: GEMINI_MODEL,
+      pronunciation: {
+        score: model.pronunciation.pronunciation_score,
+        accent_label: model.pronunciation.accent_label,
+        accent_notes: model.pronunciation.accent_notes,
+        problem_sounds: model.pronunciation.problem_sounds,
+        coaching: model.pronunciation.pronunciation_coaching,
+      },
     };
   };
 

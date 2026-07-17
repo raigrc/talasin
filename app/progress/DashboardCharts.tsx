@@ -119,6 +119,12 @@ export function DashboardCharts({ stats }: { stats: Stats }) {
     delivery: d.avg_delivery,
   }));
 
+  const pronunciationTrend =
+    stats.pronunciation?.trend.map((d) => ({
+      day: shortDay(d.local_day),
+      pronunciation: d.avg_pronunciation,
+    })) ?? [];
+
   const gameCardMeta: Record<
     GameTab,
     { title: string; subtitle: string; empty: string; hasData: boolean }
@@ -309,6 +315,46 @@ export function DashboardCharts({ stats }: { stats: Stats }) {
           </LineChart>
         </ResponsiveContainer>
       </ChartCard>
+
+      {/* Pronunciation trend (only when data exists). */}
+      {stats.pronunciation && pronunciationTrend.length > 0 && (
+        <ChartCard
+          title="Pronunciation"
+          subtitle={`Average score per day (0-100). Accent: ${stats.pronunciation.top_accent ?? "—"}${
+            stats.pronunciation.top_problem_sounds.length > 0
+              ? ` · Focus: ${stats.pronunciation.top_problem_sounds.join(", ")}`
+              : ""
+          }`}
+          hasData
+          emptyHint=""
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={pronunciationTrend}
+              margin={{ top: 8, right: 12, left: -12, bottom: 0 }}
+            >
+              <CartesianGrid stroke={GRID} vertical={false} />
+              <XAxis dataKey="day" stroke={AXIS} fontSize={11} tickLine={false} />
+              <YAxis
+                stroke={AXIS}
+                fontSize={11}
+                tickLine={false}
+                domain={[0, 100]}
+                width={44}
+              />
+              <Tooltip content={<TooltipBox />} />
+              <Line
+                type="monotone"
+                dataKey="pronunciation"
+                name="Pronunciation"
+                stroke={ACCENT}
+                strokeWidth={2}
+                dot={{ r: 3, fill: ACCENT }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      )}
 
       {/* Per-fallacy accuracy (weakest first is useful, but we show most-played). */}
       {stats.game.by_fallacy.length > 0 && (

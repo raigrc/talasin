@@ -1,5 +1,5 @@
 {
-  "_readme": "Canned Gemini voice responses for --mock, keyed by fixture id. Each case lists the raw model JSON returned per run (the mock plays these through the REAL analyzeInterviewAudio path) and the per-gate verdicts the harness is EXPECTED to produce. The mock run passes iff actual verdicts match `expected` for every case — that is how we know the gates actually trip.",
+  "_readme": "Canned Gemini voice responses for --mock, keyed by fixture id. Each case lists the raw model JSON returned per run (the mock plays these through the REAL analyzeInterviewAudio path) and the per-gate verdicts the harness is EXPECTED to produce. The mock run passes iff actual verdicts match `expected` for every case — that is how we know the gates actually trip. All responses include the pronunciation block required by voiceModelSchemaWithPronunciation.",
   "cases": {
     "mock-clean-pass": {
       "expected": { "filler": "PASS", "wpm": "PASS", "wer": "PASS", "stability": "PASS" },
@@ -11,7 +11,14 @@
           "clarity_score": 84,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Clear setup, concrete middle, closes on results." },
           "coaching": ["Quantify the parallel-run effort so the six weeks feels earned.", "Slow slightly on the final result so it lands."],
-          "overall_delivery_score": 82
+          "overall_delivery_score": 82,
+          "pronunciation": {
+            "pronunciation_score": 90,
+            "accent_label": "neutral",
+            "accent_notes": "Standard American English pronunciation with no distinctive regional markers.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain your current clear enunciation style.", "Continue focusing on natural sentence-level stress patterns."]
+          }
         },
         {
           "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
@@ -20,7 +27,14 @@
           "clarity_score": 86,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Well-structured answer with a concrete close." },
           "coaching": ["Name the two teams that copied the playbook for extra credibility.", "Open with the refresh-time win instead of burying it."],
-          "overall_delivery_score": 80
+          "overall_delivery_score": 80,
+          "pronunciation": {
+            "pronunciation_score": 91,
+            "accent_label": "neutral",
+            "accent_notes": "Standard American English pronunciation with no distinctive regional markers.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain your current clear enunciation style.", "Continue focusing on natural sentence-level stress patterns."]
+          }
         }
       ]
     },
@@ -34,7 +48,16 @@
           "clarity_score": 62,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Followable but heavily interrupted by fillers." },
           "coaching": ["Cut the um/uh before every number — pause silently instead.", "The forty-to-seventy-eight stat is strong; deliver it clean."],
-          "overall_delivery_score": 60
+          "overall_delivery_score": 60,
+          "pronunciation": {
+            "pronunciation_score": 68,
+            "accent_label": "filipino",
+            "accent_notes": "Filipino accent markers: tapped /r/ in 'rebuild' and 'spring', dental /t/ for 'th' in 'the'.",
+            "problem_sounds": [
+              { "category": "th_stop", "description": "Dental fricatives replaced with stops in some positions.", "examples": ["the", "that"], "severity": "medium", "tip": "Place your tongue between your teeth for 'th' sounds." }
+            ],
+            "pronunciation_coaching": ["Focus on distinguishing short and long vowels in fast speech.", "Work on consistent word-final consonant articulation."]
+          }
         },
         {
           "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt this spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were brutal to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
@@ -43,7 +66,16 @@
           "clarity_score": 58,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Cluttered delivery but the story arc is complete." },
           "coaching": ["Practice the opening sentence until it comes out filler-free.", "Group the metrics into one clean sentence at the end."],
-          "overall_delivery_score": 64
+          "overall_delivery_score": 64,
+          "pronunciation": {
+            "pronunciation_score": 66,
+            "accent_label": "filipino",
+            "accent_notes": "Filipino accent markers: tapped /r/ in 'rebuild' and 'spring', dental /t/ for 'th' in 'the'.",
+            "problem_sounds": [
+              { "category": "th_stop", "description": "Dental fricatives replaced with stops in some positions.", "examples": ["the", "that"], "severity": "medium", "tip": "Place your tongue between your teeth for 'th' sounds." }
+            ],
+            "pronunciation_coaching": ["Focus on distinguishing short and long vowels in fast speech.", "Work on consistent word-final consonant articulation."]
+          }
         }
       ]
     },
@@ -57,7 +89,14 @@
           "clarity_score": 70,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete arc despite filler noise." },
           "coaching": ["Replace the um before each metric with a breath.", "Tighten the tax-details tangent to one clause."],
-          "overall_delivery_score": 70
+          "overall_delivery_score": 70,
+          "pronunciation": {
+            "pronunciation_score": 75,
+            "accent_label": "neutral",
+            "accent_notes": "Clear pronunciation with minor hesitation artifacts from fillers.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain clarity during filler-free segments.", "Work on smooth transitions between sentences."]
+          }
         },
         {
           "transcript": "Um, the project I would highlight is, uh, the customer onboarding flow we rebuilt last spring. The old flow had, um, eleven steps and, like, most people quit before finishing. Basically, we started by watching, uh, ten real users try to sign up, and, um, the recordings were painful to sit through. People got stuck on, like, the second screen, you know, the one asking for tax details nobody keeps handy. Um, we cut the form to four steps and moved the, uh, tax part to after the first login. Completion went from, um, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
@@ -66,7 +105,14 @@
           "clarity_score": 71,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete arc despite filler noise." },
           "coaching": ["Replace the um before each metric with a breath.", "Tighten the tax-details tangent to one clause."],
-          "overall_delivery_score": 70
+          "overall_delivery_score": 70,
+          "pronunciation": {
+            "pronunciation_score": 76,
+            "accent_label": "neutral",
+            "accent_notes": "Clear pronunciation with minor hesitation artifacts from fillers.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain clarity during filler-free segments.", "Work on smooth transitions between sentences."]
+          }
         }
       ]
     },
@@ -80,7 +126,14 @@
           "clarity_score": 64,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Story is complete but delivery is cluttered." },
           "coaching": ["Lead with the completion-rate win.", "Cut the hedging before every number."],
-          "overall_delivery_score": 66
+          "overall_delivery_score": 66,
+          "pronunciation": {
+            "pronunciation_score": 70,
+            "accent_label": "neutral",
+            "accent_notes": "Generally clear pronunciation, some consonant cluster simplification.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain clarity at faster speaking rates.", "Focus on complete word articulation when speaking quickly."]
+          }
         },
         {
           "transcript": "the project I would highlight is, the customer onboarding flow we rebuilt last spring. The old flow had, eleven steps and, most people quit before finishing. Basically, we started by watching, ten real users try to sign up, and, the recordings were painful to sit through. People got stuck on, the second screen, the one asking for tax details nobody keeps handy. we cut the form to four steps and moved the, tax part to after the first login. Completion went from, forty percent to seventy eight percent in, like, six weeks. The part I am proudest of is, uh, the follow up, you know, we kept watching sessions every month after launch, and, um, that habit caught two more drop off points before they showed up in the numbers.",
@@ -89,7 +142,14 @@
           "clarity_score": 65,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Story is complete but delivery is cluttered." },
           "coaching": ["Lead with the completion-rate win.", "Cut the hedging before every number."],
-          "overall_delivery_score": 67
+          "overall_delivery_score": 67,
+          "pronunciation": {
+            "pronunciation_score": 71,
+            "accent_label": "neutral",
+            "accent_notes": "Generally clear pronunciation, some consonant cluster simplification.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain clarity at faster speaking rates.", "Focus on complete word articulation when speaking quickly."]
+          }
         }
       ]
     },
@@ -103,7 +163,14 @@
           "clarity_score": 82,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Clear narrative with a strong close." },
           "coaching": ["Anchor the timeline earlier in the answer.", "Give one sentence on what could have gone wrong."],
-          "overall_delivery_score": 81
+          "overall_delivery_score": 81,
+          "pronunciation": {
+            "pronunciation_score": 88,
+            "accent_label": "neutral",
+            "accent_notes": "Clear, confident delivery with standard pronunciation.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Excellent clarity and pacing.", "Maintain the natural rhythm you have established."]
+          }
         },
         {
           "transcript": "This year I ran the transition of our reporting pipeline from daily batch tasks to a streaming setup. The old system took ten hours to refresh, and the sales team kept taking decisions on old figures. I proposed the change, charted every upstream dependency, and wrote the plan the team executed over six weeks. My core contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, something broke, and refresh time went from nine hours to under ten seconds. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams adopted our staged cutover manual for their own migrations.",
@@ -112,7 +179,14 @@
           "clarity_score": 83,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Clear narrative with a strong close." },
           "coaching": ["Anchor the timeline earlier in the answer.", "Give one sentence on what could have gone wrong."],
-          "overall_delivery_score": 82
+          "overall_delivery_score": 82,
+          "pronunciation": {
+            "pronunciation_score": 89,
+            "accent_label": "neutral",
+            "accent_notes": "Clear, confident delivery with standard pronunciation.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Excellent clarity and pacing.", "Maintain the natural rhythm you have established."]
+          }
         }
       ]
     },
@@ -126,7 +200,14 @@
           "clarity_score": 75,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Solid structure throughout." },
           "coaching": ["Land the closing metric with a pause.", "Trim the dependency-mapping detail."],
-          "overall_delivery_score": 80
+          "overall_delivery_score": 80,
+          "pronunciation": {
+            "pronunciation_score": 85,
+            "accent_label": "neutral",
+            "accent_notes": "Clear, standard pronunciation throughout.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain your natural speaking pace.", "Continue with clear vowel articulation."]
+          }
         },
         {
           "transcript": "Last year I led the migration of our reporting pipeline from nightly batch jobs to a streaming setup. The old system took nine hours to refresh, and the sales team kept making decisions on stale numbers. I proposed the change, mapped every downstream dependency, and wrote the plan the team executed over six weeks. My main contribution was the cutover strategy. We ran both systems in parallel for two weeks and compared outputs row by row until the differences dropped to zero. When we flipped the switch, nothing broke, and refresh time went from nine hours to under five minutes. The result changed how the company works. Sales now trusts the dashboard enough to check it during client calls, and two other teams copied our parallel cutover playbook for their own migrations.",
@@ -135,7 +216,96 @@
           "clarity_score": 74,
           "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Solid structure throughout." },
           "coaching": ["Land the closing metric with a pause.", "Trim the dependency-mapping detail."],
-          "overall_delivery_score": 68
+          "overall_delivery_score": 68,
+          "pronunciation": {
+            "pronunciation_score": 86,
+            "accent_label": "neutral",
+            "accent_notes": "Clear, standard pronunciation throughout.",
+            "problem_sounds": [],
+            "pronunciation_coaching": ["Maintain your natural speaking pace.", "Continue with clear vowel articulation."]
+          }
+        }
+      ]
+    },
+    "mock-pron-pass": {
+      "expected": { "filler": "PASS", "wpm": "PASS", "wer": "PASS", "stability": "PASS", "accent_stability": "PASS", "problem_precision": "PASS", "score_sanity": "PASS", "empty_sanity": "PASS" },
+      "runs": [
+        {
+          "transcript": "I think the three main things that made this project work were clear communication, consistent testing, and the ability to adapt when things changed.",
+          "word_count": 24,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 68,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete answer with clear structure." },
+          "coaching": ["Open with the specific project name for credibility.", "Quantify the adaptability claim with an example."],
+          "overall_delivery_score": 70,
+          "pronunciation": {
+            "pronunciation_score": 62,
+            "accent_label": "filipino",
+            "accent_notes": "Filipino accent: dental fricatives realized as stops, tapped /r/.",
+            "problem_sounds": [
+              { "category": "th_stop", "description": "The speaker replaces 'th' with 't' or 'd' — 'think' sounds like 'tink', 'that' sounds like 'dat'.", "examples": ["think", "three", "that"], "severity": "medium", "tip": "Place your tongue between your teeth for 'th' sounds." }
+            ],
+            "pronunciation_coaching": ["Focus on dental fricatives — they are the highest-impact fix for intelligibility.", "Practice minimal pairs: think/tink, that/dat, three/tree."]
+          }
+        },
+        {
+          "transcript": "I think the three main things that made this project work were clear communication, consistent testing, and the ability to adapt when things changed.",
+          "word_count": 24,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 66,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete answer with clear structure." },
+          "coaching": ["Open with the specific project name for credibility.", "Quantify the adaptability claim with an example."],
+          "overall_delivery_score": 68,
+          "pronunciation": {
+            "pronunciation_score": 60,
+            "accent_label": "filipino",
+            "accent_notes": "Filipino accent: dental fricatives realized as stops, tapped /r/.",
+            "problem_sounds": [
+              { "category": "th_stop", "description": "The speaker replaces 'th' with 't' or 'd' — 'think' sounds like 'tink', 'that' sounds like 'dat'.", "examples": ["think", "three", "that"], "severity": "medium", "tip": "Place your tongue between your teeth for 'th' sounds." }
+            ],
+            "pronunciation_coaching": ["Focus on dental fricatives — they are the highest-impact fix for intelligibility.", "Practice minimal pairs: think/tink, that/dat, three/tree."]
+          }
+        }
+      ]
+    },
+    "mock-pron-fail-accent": {
+      "expected": { "filler": "PASS", "wpm": "PASS", "wer": "PASS", "stability": "PASS", "accent_stability": "FAIL", "problem_precision": "PASS", "score_sanity": "PASS", "empty_sanity": "PASS" },
+      "runs": [
+        {
+          "transcript": "I think the three main things that made this project work were clear communication, consistent testing, and the ability to adapt when things changed.",
+          "word_count": 24,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 68,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete answer." },
+          "coaching": ["Open with the project name.", "Add a concrete metric."],
+          "overall_delivery_score": 70,
+          "pronunciation": {
+            "pronunciation_score": 65,
+            "accent_label": "filipino",
+            "accent_notes": "Filipino accent markers present.",
+            "problem_sounds": [
+              { "category": "th_stop", "description": "Dental fricatives replaced with stops.", "examples": ["think", "three"], "severity": "medium", "tip": "Tongue between teeth for 'th'." }
+            ],
+            "pronunciation_coaching": ["Focus on dental fricatives.", "Practice minimal pairs."]
+          }
+        },
+        {
+          "transcript": "I think the three main things that made this project work were clear communication, consistent testing, and the ability to adapt when things changed.",
+          "word_count": 24,
+          "filler_words": { "count": 0, "items": [] },
+          "clarity_score": 66,
+          "structure_assessment": { "has_beginning": true, "has_middle": true, "has_end": true, "note": "Complete answer." },
+          "coaching": ["Open with the project name.", "Add a concrete metric."],
+          "overall_delivery_score": 68,
+          "pronunciation": {
+            "pronunciation_score": 63,
+            "accent_label": "southeast_asian_other",
+            "accent_notes": "Southeast Asian accent with some Filipino features.",
+            "problem_sounds": [
+              { "category": "th_stop", "description": "Dental fricatives replaced with stops.", "examples": ["think", "three"], "severity": "medium", "tip": "Tongue between teeth for 'th'." }
+            ],
+            "pronunciation_coaching": ["Focus on dental fricatives.", "Practice minimal pairs."]
+          }
         }
       ]
     }

@@ -339,6 +339,21 @@ $$;
 -- Backfill: every existing attempt earns the flat interview XP retroactively.
 update interview_attempts set xp = 50 where xp = 0;
 
+-- Pronunciation analysis columns (nullable, backward-compatible)
+alter table interview_attempts add column if not exists pronunciation_score      smallint;
+alter table interview_attempts add column if not exists accent_label            text;
+alter table interview_attempts add column if not exists problem_sound_categories text[];
+
+do $$
+begin
+  if not exists (select 1 from pg_constraint where conname = 'interview_attempts_pronunciation_chk') then
+    alter table interview_attempts
+      add constraint interview_attempts_pronunciation_chk
+      check (pronunciation_score is null or pronunciation_score between 0 and 100);
+  end if;
+end
+$$;
+
 -- v1: achievements — unlock log (catalog lives in lib/achievements.ts) --------
 create table if not exists achievements (
   key         text primary key,                 -- e.g. 'streak_7'

@@ -81,6 +81,9 @@ export interface InterviewAttempt {
   xp: number;
   local_day: string;
   created_at: string;
+  pronunciation_score: number | null;
+  accent_label: string | null;
+  problem_sound_categories: string[] | null;
 }
 
 export interface DailyActivity {

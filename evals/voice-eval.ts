@@ -67,6 +67,14 @@ const fixtureSchema = z.object({
     .optional(),
   gates: z.object({ wer_max_percent: z.number().positive().optional() }).optional(),
   notes: z.string().optional(),
+  // Pronunciation eval fields (optional — only on pronunciation fixtures)
+  pronunciation_fixture: z.boolean().optional(),
+  expected_pronunciation_categories: z.array(z.string()).optional(),
+  expected_accent_label: z.string().nullable().optional(),
+  expected_problem_count_min: z.number().int().min(0).optional(),
+  expected_problem_count_max: z.number().int().min(0).optional(),
+  expected_score_min: z.number().int().min(0).max(100).optional(),
+  expected_score_max: z.number().int().min(0).max(100).optional(),
 });
 type Fixture = z.infer<typeof fixtureSchema>;
 const manifestSchema = z.object({ fixtures: z.array(fixtureSchema).min(1) });
@@ -81,6 +89,10 @@ const mockResponsesSchema = z.object({
         wpm: gateWord,
         wer: gateWord,
         stability: gateWord,
+        accent_stability: gateWord.optional(),
+        problem_precision: gateWord.optional(),
+        score_sanity: gateWord.optional(),
+        empty_sanity: gateWord.optional(),
       }),
       runs: z.array(z.unknown()).min(1),
     }),
@@ -99,6 +111,10 @@ interface RunMetrics {
   overall: number;
   confidence: "high" | "low";
   structure: { has_beginning: boolean; has_middle: boolean; has_end: boolean };
+  // Pronunciation fields
+  pronunciationScore: number;
+  accentLabel: string;
+  problemSounds: { category: string; severity: string }[];
 }
 interface RunFailure {
   ok: false;
@@ -112,11 +128,18 @@ interface Gates {
   wer: boolean | null;
   stability: boolean | null;
 }
+interface PronunciationGates {
+  accentStability: boolean | null;
+  problemPrecision: boolean | null;
+  scoreSanity: boolean | null;
+  emptySanity: boolean | null;
+}
 interface FixtureResult {
   fixture: Fixture;
   skipped?: string;
   runs: RunResult[];
   gates: Gates;
+  pronGates: PronunciationGates;
   targetWpm: number;
   werMax: number;
 }
@@ -159,6 +182,16 @@ function summarizeGates(r: FixtureResult): boolean {
   const gates = [r.gates.filler, r.gates.wpm, r.gates.wer, r.gates.stability];
   if (r.skipped) return false;
   if (r.runs.some((run) => !run.ok)) return false;
+  // For pronunciation fixtures, also require pronunciation gates to pass
+  if (r.fixture.pronunciation_fixture) {
+    const pronGates = [
+      r.pronGates.accentStability,
+      r.pronGates.problemPrecision,
+      r.pronGates.scoreSanity,
+      r.pronGates.emptySanity,
+    ];
+    return gates.every((g) => g !== false) && pronGates.every((g) => g !== false);
+  }
   return gates.every((g) => g !== false);
 }
 
@@ -257,6 +290,7 @@ async function main(): Promise<void> {
       fixture,
       runs: [],
       gates: { filler: null, wpm: null, wer: null, stability: null },
+      pronGates: { accentStability: null, problemPrecision: null, scoreSanity: null, emptySanity: null },
       targetWpm: 0,
       werMax,
     };
@@ -323,6 +357,12 @@ async function main(): Promise<void> {
           overall: fb.overall_delivery_score,
           confidence: fb.confidence,
           structure: fb.structure,
+          pronunciationScore: fb.pronunciation.score,
+          accentLabel: fb.pronunciation.accent_label,
+          problemSounds: fb.pronunciation.problem_sounds.map((ps) => ({
+            category: ps.category,
+            severity: ps.severity,
+          })),
         });
       } catch (err) {
         if (err instanceof GeminiError && err.kind === "rate_limited") {
@@ -352,6 +392,57 @@ async function main(): Promise<void> {
           Math.max(...okRuns.map((r) => r.clarity)) - Math.min(...okRuns.map((r) => r.clarity));
         result.gates.stability =
           overallDelta <= STABILITY_MAX_DELTA && clarityDelta <= STABILITY_MAX_DELTA;
+      }
+
+      // --- Pronunciation gate evaluation (only for pronunciation fixtures) ---
+      if (fixture.pronunciation_fixture && okRuns.length >= 2) {
+        const f = fixture;
+
+        // Accent stability: accent_label must be the same in >= 2/3 runs
+        const accentCounts = new Map<string, number>();
+        for (const r of okRuns) {
+          accentCounts.set(r.accentLabel, (accentCounts.get(r.accentLabel) ?? 0) + 1);
+        }
+        const maxAccentCount = Math.max(...accentCounts.values());
+        result.pronGates.accentStability = maxAccentCount >= 2;
+
+        // Problem precision: at least one detected problem_sounds category
+        // matches one of the expected categories
+        if (f.expected_pronunciation_categories && f.expected_pronunciation_categories.length > 0) {
+          const allDetectedCategories = new Set(
+            okRuns.flatMap((r) => r.problemSounds.map((ps) => ps.category)),
+          );
+          const expectedSet = new Set(f.expected_pronunciation_categories);
+          const hasMatch = [...expectedSet].some((cat) => allDetectedCategories.has(cat));
+          result.pronGates.problemPrecision = hasMatch;
+        } else {
+          // No expected categories — precision gate passes vacuously
+          result.pronGates.problemPrecision = true;
+        }
+
+        // Score sanity: issue fixtures should score lower than clean baseline
+        const avgScore =
+          okRuns.reduce((sum, r) => sum + r.pronunciationScore, 0) / okRuns.length;
+        if (f.expected_score_min !== undefined) {
+          result.pronGates.scoreSanity = avgScore >= f.expected_score_min;
+        } else if (f.expected_score_max !== undefined) {
+          result.pronGates.scoreSanity = avgScore <= f.expected_score_max;
+        } else {
+          result.pronGates.scoreSanity = true;
+        }
+
+        // Empty sanity: for clean baseline, problem_sounds should be empty or low severity
+        if (f.expected_problem_count_max !== undefined) {
+          const avgProblemCount =
+            okRuns.reduce((sum, r) => sum + r.problemSounds.length, 0) / okRuns.length;
+          result.pronGates.emptySanity = avgProblemCount <= f.expected_problem_count_max;
+        } else if (f.expected_problem_count_min !== undefined) {
+          const avgProblemCount =
+            okRuns.reduce((sum, r) => sum + r.problemSounds.length, 0) / okRuns.length;
+          result.pronGates.emptySanity = avgProblemCount >= f.expected_problem_count_min;
+        } else {
+          result.pronGates.emptySanity = true;
+        }
       }
     }
   }
@@ -417,6 +508,38 @@ async function main(): Promise<void> {
         `  structure (informational, not gated): expected ${fmt(exp)} | got ${okRuns.map((x) => fmt(x.structure)).join(", ")} ${matches ? "(match)" : "(MISMATCH — check manually)"}`,
       );
     }
+    // Pronunciation per-fixture detail
+    if (r.fixture.pronunciation_fixture && okRuns.length > 0) {
+      const PW = [4, 14, 10, 12, 24];
+      console.log(
+        row(["run", "pron_score", "accent", "problems", "categories"], PW),
+      );
+      okRuns.forEach((run, i) => {
+        console.log(
+          row(
+            [
+              i + 1,
+              run.pronunciationScore,
+              run.accentLabel,
+              run.problemSounds.length,
+              run.problemSounds.map((ps) => ps.category).join(", ") || "(none)",
+            ],
+            PW,
+          ),
+        );
+      });
+      if (r.fixture.expected_accent_label) {
+        const accentMatches = okRuns.every(
+          (x) => x.accentLabel === r.fixture.expected_accent_label,
+        );
+        console.log(
+          `  accent: expected "${r.fixture.expected_accent_label}" | got ${okRuns.map((x) => `"${x.accentLabel}"`).join(", ")} ${accentMatches ? "(match)" : "(MISMATCH)"}`,
+        );
+      }
+      console.log(
+        `  pron gates: stability=${verdict(r.pronGates.accentStability)}  precision=${verdict(r.pronGates.problemPrecision)}  score=${verdict(r.pronGates.scoreSanity)}  empty=${verdict(r.pronGates.emptySanity)}`,
+      );
+    }
   }
 
   // --- summary + verdict --------------------------------------------------------
@@ -452,6 +575,66 @@ async function main(): Promise<void> {
   console.log(
     `requests=${usage.calls} totalTokens=${usage.totalTokens}${skipped.length > 0 ? `  |  ${skipped.length} fixture(s) skipped — record them for full §1.9 coverage` : ""}`,
   );
+
+  // --- Pronunciation eval summary ------------------------------------------------
+  const pronFixtures = evaluated.filter((r) => r.fixture.pronunciation_fixture);
+  if (pronFixtures.length > 0) {
+    heading("PRONUNCIATION EVAL SUMMARY");
+
+    // Accent stability: for each fixture, is accent consistent across runs?
+    const accentStable = pronFixtures.filter((r) => r.pronGates.accentStability === true).length;
+    console.log(
+      `Accent stability:   ${verdict(accentStable === pronFixtures.length)} (${accentStable}/${pronFixtures.length} fixtures consistent)`,
+    );
+
+    // Problem precision: did detected categories match expected?
+    const problemHit = pronFixtures.filter((r) => r.pronGates.problemPrecision === true).length;
+    console.log(
+      `Problem precision:  ${verdict(problemHit === pronFixtures.length)} (${problemHit}/${pronFixtures.length} fixtures matched expected category)`,
+    );
+
+    // Score sanity: issue fixtures should score lower than clean baseline
+    const issueFixtures = pronFixtures.filter(
+      (r) => r.fixture.expected_score_max !== undefined,
+    );
+    const baselineFixtures = pronFixtures.filter(
+      (r) => r.fixture.expected_score_min !== undefined,
+    );
+    const scoreSanityOk = pronFixtures.every((r) => r.pronGates.scoreSanity === true);
+    if (issueFixtures.length > 0 && baselineFixtures.length > 0) {
+      const issueAvg =
+        issueFixtures.reduce((sum, r) => {
+          const okRuns = r.runs.filter((x): x is RunMetrics => x.ok);
+          return sum + okRuns.reduce((s, x) => s + x.pronunciationScore, 0) / okRuns.length;
+        }, 0) / issueFixtures.length;
+      const baselineAvg =
+        baselineFixtures.reduce((sum, r) => {
+          const okRuns = r.runs.filter((x): x is RunMetrics => x.ok);
+          return sum + okRuns.reduce((s, x) => s + x.pronunciationScore, 0) / okRuns.length;
+        }, 0) / baselineFixtures.length;
+      console.log(
+        `Score sanity:       ${verdict(scoreSanityOk)} (issue fixtures avg ${Math.round(issueAvg)}, baseline avg ${Math.round(baselineAvg)})`,
+      );
+    } else {
+      console.log(`Score sanity:       ${verdict(scoreSanityOk)}`);
+    }
+
+    // Empty sanity: clean baseline should have few/no problem sounds
+    const emptySanityOk = pronFixtures.every((r) => r.pronGates.emptySanity === true);
+    if (baselineFixtures.length > 0) {
+      const baselineProblemAvg =
+        baselineFixtures.reduce((sum, r) => {
+          const okRuns = r.runs.filter((x): x is RunMetrics => x.ok);
+          return sum + okRuns.reduce((s, x) => s + x.problemSounds.length, 0) / okRuns.length;
+        }, 0) / baselineFixtures.length;
+      console.log(
+        `Empty sanity:       ${verdict(emptySanityOk)} (baseline has ${Math.round(baselineProblemAvg)} problem sounds avg)`,
+      );
+    } else {
+      console.log(`Empty sanity:       ${verdict(emptySanityOk)}`);
+    }
+  }
+
   console.log("");
   if (evaluated.length === 0) {
     console.log("VERDICT: NOTHING EVALUATED — no fixtures were runnable.");
@@ -472,17 +655,35 @@ async function main(): Promise<void> {
     console.log(row(["case", "gate", "expected", "actual", "ok"], TW));
     let selfTestOk = true;
     for (const r of evaluated) {
-      const expected = mockData.cases[r.fixture.id].expected;
-      const actual: Record<keyof typeof expected, string> = {
+      const expected = mockData.cases[r.fixture.id]?.expected;
+      if (!expected) continue;
+      const actual: Record<string, string> = {
         filler: verdict(r.gates.filler),
         wpm: verdict(r.gates.wpm),
         wer: verdict(r.gates.wer),
         stability: verdict(r.gates.stability),
       };
-      for (const gate of ["filler", "wpm", "wer", "stability"] as const) {
-        const ok = expected[gate] === actual[gate];
+      // Add pronunciation gates if present in expected
+      if (expected.accent_stability !== undefined) {
+        actual.accent_stability = verdict(r.pronGates.accentStability);
+      }
+      if (expected.problem_precision !== undefined) {
+        actual.problem_precision = verdict(r.pronGates.problemPrecision);
+      }
+      if (expected.score_sanity !== undefined) {
+        actual.score_sanity = verdict(r.pronGates.scoreSanity);
+      }
+      if (expected.empty_sanity !== undefined) {
+        actual.empty_sanity = verdict(r.pronGates.emptySanity);
+      }
+      for (const gate of Object.keys(expected) as Array<keyof typeof expected>) {
+        const expectedVal = expected[gate];
+        if (expectedVal === undefined) continue;
+        const actualVal = actual[gate];
+        if (actualVal === undefined) continue;
+        const ok = expectedVal === actualVal;
         if (!ok) selfTestOk = false;
-        console.log(row([r.fixture.id, gate, expected[gate], actual[gate], ok ? "OK" : "BAD"], TW));
+        console.log(row([r.fixture.id, gate, expectedVal, actualVal, ok ? "OK" : "BAD"], TW));
       }
     }
     console.log("");

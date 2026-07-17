@@ -19,6 +19,18 @@ export function syllogismXp(isCorrect: boolean): number {
   return 5 + (isCorrect ? 5 : 0);
 }
 
+/** Sequence round: same shape as fallacy — 10 base + 5 correct + 5·(difficulty−1) → 10–25. */
+export function sequenceXp(isCorrect: boolean, difficulty: number): number {
+  const d = Number.isFinite(difficulty) ? Math.min(3, Math.max(1, difficulty)) : 1;
+  return 10 + (isCorrect ? 5 : 0) + 5 * (d - 1);
+}
+
+/** Better Bet round: 10 base + 5 correct + 5·(tier−1) → 10–25. */
+export function betterBetXp(isCorrect: boolean, tier: number): number {
+  const t = Number.isFinite(tier) ? Math.min(3, Math.max(1, tier)) : 1;
+  return 10 + (isCorrect ? 5 : 0) + 5 * (t - 1);
+}
+
 /** N-back session: 25 base + 10 per N above 2 + a score bonus → 25–70. */
 export function nbackXp(n: number, score: number): number {
   let bonus = 0;

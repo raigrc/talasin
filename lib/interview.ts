@@ -81,6 +81,9 @@ export async function insertInterviewAttempt(
       structure_score: feedback.structure_score ?? null,
       xp: INTERVIEW_XP,
       local_day: todayLocal(),
+      pronunciation_score: feedback.pronunciation.score,
+      accent_label: feedback.pronunciation.accent_label,
+      problem_sound_categories: feedback.pronunciation.problem_sounds.map(s => s.category),
     })
     .select("id")
     .single();
