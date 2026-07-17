@@ -5,7 +5,7 @@ import type { z } from "zod";
  * failures the answer route maps to HTTP statuses (§4.2, §8).
  */
 
-export type GameType = "fallacy" | "nback" | "syllogism";
+export type GameType = "fallacy" | "nback" | "syllogism" | "sequence";
 
 /** Serializable card metadata — safe to pass from RSC to the hub UI. */
 export interface GameMeta {

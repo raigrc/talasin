@@ -2,6 +2,7 @@ import "server-only";
 import { fallacyGame } from "./fallacy";
 import { nbackGame } from "./nback";
 import { syllogismGame } from "./syllogism";
+import { sequenceGame } from "./sequence";
 import type { GameDefinition, GameMeta, GameType } from "./types";
 
 /**
@@ -21,6 +22,7 @@ export const GAMES: Record<GameType, GameDefinition> = {
   fallacy: fallacyGame,
   nback: nbackGame,
   syllogism: syllogismGame,
+  sequence: sequenceGame,
 };
 
 /** Registry lookup — null for unknown ids (route maps to 400). */
